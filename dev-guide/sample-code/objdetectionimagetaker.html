@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Auto-Capture Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #111827; color: white; font-family: sans-serif; }
+        .progress-bar { transition: width 0.1s linear; }
+    </style>
+</head>
+<body class="p-6 max-w-4xl mx-auto flex flex-col gap-6">
+
+    <div class="text-center">
+        <h1 class="text-2xl font-bold mb-2">Smart Auto-Capture PoC</h1>
+        <p class="text-gray-400">Place an item in front of the camera. Hold it still for 1 second.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Live Feed Side -->
+        <div class="flex flex-col gap-4">
+            <div class="relative bg-black rounded-lg overflow-hidden border border-gray-700 aspect-video">
+                <video id="webcam" class="w-full h-full object-cover transform scale-x-[-1]" autoplay playsinline muted></video>
+                
+                <!-- Status Overlay -->
+                <div id="statusBadge" class="absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-bold bg-gray-800 text-gray-300">
+                    Waiting for camera...
+                </div>
+            </div>
+
+            <!-- Debug Metrics -->
+            <div class="bg-gray-800 p-4 rounded-lg text-sm font-mono space-y-3">
+                <div class="flex justify-between">
+                    <span>Motion Score:</span>
+                    <span id="motionVal">0</span>
+                </div>
+                <!-- Stability Progress Bar -->
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span>Stabilizing:</span>
+                        <span id="timerVal">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2.5">
+                        <div id="stabilityBar" class="bg-blue-600 h-2.5 rounded-full progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Side -->
+        <div class="flex flex-col gap-4">
+            <div class="bg-gray-800 rounded-lg overflow-hidden border border-gray-700 aspect-video flex items-center justify-center relative">
+                <span id="placeholderText" class="text-gray-500">Captured image will appear here</span>
+                <canvas id="resultCanvas" class="w-full h-full object-contain hidden"></canvas>
+            </div>
+            
+            <button id="resetBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg w-full disabled:opacity-50 hidden" onclick="resetCapture()">
+                Scan Next Book
+            </button>
+        </div>
+    </div>
+
+    <!-- Hidden canvas used purely for low-res pixel math to save CPU -->
+    <canvas id="mathCanvas" width="64" height="48" class="hidden"></canvas>
+
+    <script>
+        const video = document.getElementById('webcam');
+        const mathCanvas = document.getElementById('mathCanvas');
+        const ctx = mathCanvas.getContext('2d', { willReadFrequently: true });
+        
+        const resultCanvas = document.getElementById('resultCanvas');
+        const resultCtx = resultCanvas.getContext('2d');
+        const statusBadge = document.getElementById('statusBadge');
+        const motionVal = document.getElementById('motionVal');
+        const stabilityBar = document.getElementById('stabilityBar');
+        const timerVal = document.getElementById('timerVal');
+        const resetBtn = document.getElementById('resetBtn');
+        const placeholderText = document.getElementById('placeholderText');
+
+        // State Machine Variables
+        let previousPixels = [];
+        let state = 'IDLE'; // IDLE -> MOVING -> STABILIZING -> CAPTURED
+        let stableFrames = 0;
+        let isLooping = false;
+
+        // Configuration Thresholds (Tweak these based on lighting/webcam quality)
+        const MOTION_THRESHOLD_HIGH = 15; // Score required to trigger "MOVING" state
+        const MOTION_THRESHOLD_LOW = 4;   // Score required to trigger "STABILIZING" state
+        const FRAMES_TO_STABILIZE = 10;   // At 10fps, 10 frames = 1 second of stillness
+
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" } 
+                });
+                video.srcObject = stream;
+                video.onloadedmetadata = () => {
+                    resultCanvas.width = video.videoWidth;
+                    resultCanvas.height = video.videoHeight;
+                    setStatus('IDLE', 'bg-gray-800 text-gray-300');
+                    startAnalysisLoop();
+                };
+            } catch (err) {
+                setStatus('Camera Error', 'bg-red-900 text-red-200');
+                console.error("Camera access denied or unavailable.", err);
+            }
+        }
+
+        function startAnalysisLoop() {
+            if (isLooping) return;
+            isLooping = true;
+            
+            // Run analysis roughly 10 times a second to save CPU
+            const loop = setInterval(() => {
+                if (state === 'CAPTURED') {
+                    clearInterval(loop);
+                    isLooping = false;
+                    return;
+                }
+                analyzeFrame();
+            }, 100); 
+        }
+
+        function analyzeFrame() {
+            // Draw video to tiny canvas for fast math
+            ctx.drawImage(video, 0, 0, mathCanvas.width, mathCanvas.height);
+            const imageData = ctx.getImageData(0, 0, mathCanvas.width, mathCanvas.height);
+            const pixels = imageData.data;
+            
+            let totalDiff = 0;
+            let currentPixels = [];
+
+            // Convert to grayscale and compare with previous frame
+            for (let i = 0; i < pixels.length; i += 4) {
+                // Luminance formula
+                let gray = (pixels[i] * 0.299) + (pixels[i+1] * 0.587) + (pixels[i+2] * 0.114);
+                currentPixels.push(gray);
+
+                if (previousPixels.length > 0) {
+                    totalDiff += Math.abs(gray - previousPixels[i/4]);
+                }
+            }
+
+            previousPixels = currentPixels;
+
+            // Average difference per pixel
+            const motionScore = previousPixels.length > 0 ? (totalDiff / currentPixels.length) : 0;
+            motionVal.innerText = motionScore.toFixed(1);
+
+            handleStateMachine(motionScore);
+        }
+
+        function handleStateMachine(motionScore) {
+            // State 1: Waiting for user to put a book down (big movement)
+            if (state === 'IDLE') {
+                if (motionScore > MOTION_THRESHOLD_HIGH) {
+                    state = 'MOVING';
+                    setStatus('Movement Detected', 'bg-yellow-600 text-white');
+                }
+            }
+            
+            // State 2 & 3: Item is moving, wait for it to stop
+            else if (state === 'MOVING' || state === 'STABILIZING') {
+                if (motionScore > MOTION_THRESHOLD_LOW) {
+                    // Still moving. Reset stability timer.
+                    state = 'MOVING';
+                    stableFrames = 0;
+                    updateTimerUI();
+                    setStatus('Waiting to stabilize...', 'bg-yellow-600 text-white');
+                } else {
+                    // Motion dropped. Start counting stable frames.
+                    state = 'STABILIZING';
+                    stableFrames++;
+                    updateTimerUI();
+                    setStatus('Holding still...', 'bg-blue-600 text-white');
+
+                    // State 4: Stable long enough! Snap photo.
+                    if (stableFrames >= FRAMES_TO_STABILIZE) {
+                        takeSnapshot();
+                    }
+                }
+            }
+        }
+
+        function takeSnapshot() {
+            state = 'CAPTURED';
+            setStatus('Captured!', 'bg-green-600 text-white');
+            
+            // Draw the full-res video frame to the result canvas
+            // We flip it horizontally so the result matches the mirrored webcam view
+            resultCtx.save();
+            resultCtx.scale(-1, 1);
+            resultCtx.drawImage(video, -resultCanvas.width, 0, resultCanvas.width, resultCanvas.height);
+            resultCtx.restore();
+
+            resultCanvas.classList.remove('hidden');
+            placeholderText.classList.add('hidden');
+            resetBtn.classList.remove('hidden');
+        }
+
+        function resetCapture() {
+            resultCanvas.classList.add('hidden');
+            placeholderText.classList.remove('hidden');
+            resetBtn.classList.add('hidden');
+            
+            stableFrames = 0;
+            updateTimerUI();
+            
+            // Reset to IDLE so it waits for a NEW motion spike before arming again
+            state = 'IDLE'; 
+            setStatus('Ready. Place next item.', 'bg-gray-800 text-gray-300');
+            startAnalysisLoop();
+        }
+
+        function updateTimerUI() {
+            const percent = Math.min((stableFrames / FRAMES_TO_STABILIZE) * 100, 100);
+            stabilityBar.style.width = percent + '%';
+            timerVal.innerText = Math.round(percent) + '%';
+        }
+
+        function setStatus(text, classes) {
+            statusBadge.className = `absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-bold shadow-lg ${classes}`;
+            statusBadge.innerText = text;
+        }
+
+        // Start on load
+        window.onload = initCamera;
+    </script>
+</body>
+</html>
