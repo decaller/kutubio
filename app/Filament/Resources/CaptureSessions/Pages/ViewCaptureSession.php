@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\CaptureSessions\Pages;
 
+use App\Filament\Pages\CaptureBook;
 use App\Filament\Resources\CaptureSessions\CaptureSessionResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Contracts\View\View;
 
 class ViewCaptureSession extends ViewRecord
 {
@@ -15,5 +17,16 @@ class ViewCaptureSession extends ViewRecord
         return [
             EditAction::make(),
         ];
+    }
+
+    public function getFooter(): ?View
+    {
+        if (request()->query('autoback')) {
+            return view('filament.pages.capture-session-autoback', [
+                'backUrl' => CaptureBook::getUrl(),
+            ]);
+        }
+
+        return null;
     }
 }

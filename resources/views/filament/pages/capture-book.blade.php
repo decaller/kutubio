@@ -233,7 +233,7 @@
             };
 
             const analyzeFrame = () => {
-                if (!video.videoWidth || !video.videoHeight) {
+                if (!video.videoWidth || !video.videoHeight || video.offsetParent === null) {
                     return;
                 }
 
@@ -356,6 +356,21 @@
             manualCaptureButton.addEventListener('click', captureSnapshot);
             retakeFrontButton.addEventListener('click', () => retake('front'));
             retakeBackButton.addEventListener('click', () => retake('back'));
+
+            window.addEventListener('reset-capture', () => {
+                fields.front.preview.src = '';
+                fields.front.preview.classList.add('hidden');
+                fields.front.placeholder.classList.remove('hidden');
+                fields.back.preview.src = '';
+                fields.back.preview.classList.add('hidden');
+                fields.back.placeholder.classList.remove('hidden');
+
+                state = 'IDLE';
+                stableFrames = 0;
+                updateStability();
+                setActiveSide('front');
+                refreshActions();
+            });
 
             setActiveSide('front');
             refreshActions();

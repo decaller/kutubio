@@ -26,13 +26,14 @@ class CaptureBook extends Page
 
     protected static ?int $navigationSort = 5;
 
-    protected static ?string $title = 'Capture Book';
-
+    public static ?string $title = 'Capture Book';
+    
     public ?string $frontImageData = null;
 
     public ?string $backImageData = null;
 
     public ?int $frontImageWidth = null;
+
 
     public ?int $frontImageHeight = null;
 
@@ -55,7 +56,7 @@ class CaptureBook extends Page
         ];
     }
 
-    public function submit(): mixed
+    public function submit(): void
     {
         $this->validate();
 
@@ -113,7 +114,7 @@ class CaptureBook extends Page
             ->success()
             ->send();
 
-        return redirect()->to(CaptureSessionResource::getUrl('view', ['record' => $captureSession]));
+        $this->redirect(CaptureSessionResource::getUrl('view', ['record' => $captureSession]) . '?autoback=1');
     }
 
     /**
