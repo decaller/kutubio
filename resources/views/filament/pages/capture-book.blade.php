@@ -34,6 +34,40 @@
             </section>
 
             <aside class="space-y-4">
+                <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-gray-900">
+                    <label for="quantity" class="mb-2 block text-sm font-medium text-gray-950 dark:text-white">
+                        Quantity
+                    </label>
+                    <div class="flex items-center gap-2">
+                        <button 
+                            type="button" 
+                            x-on:click="$wire.quantity = Math.max(1, $wire.quantity - 1)"
+                            class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-950 hover:bg-gray-50 dark:border-white/10 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+                        >
+                            <x-heroicon-o-minus class="h-5 w-5" />
+                        </button>
+
+                        <input 
+                            id="quantity"
+                            type="number" 
+                            wire:model.live="quantity" 
+                            min="1"
+                            class="h-10 w-full rounded-lg border-gray-200 bg-white text-center text-sm font-semibold text-gray-950 focus:border-primary-500 focus:ring-primary-500 dark:border-white/10 dark:bg-gray-800 dark:text-white"
+                        >
+
+                        <button 
+                            type="button" 
+                            x-on:click="$wire.quantity = parseInt($wire.quantity) + 1"
+                            class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-950 hover:bg-gray-50 dark:border-white/10 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+                        >
+                            <x-heroicon-o-plus class="h-5 w-5" />
+                        </button>
+                    </div>
+                    @error('quantity')
+                        <p class="mt-1 text-xs text-danger-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <button id="submitCaptureButton" type="submit" class="w-full rounded-lg bg-success-600 px-4 py-3 text-sm font-semibold text-white hover:bg-success-500 disabled:opacity-50" disabled wire:loading.attr="disabled">
                     Submit Book
                 </button>

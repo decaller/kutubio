@@ -33,6 +33,9 @@ class CaptureSessionsTable
                 TextColumn::make('status')
                     ->badge()
                     ->sortable(),
+                TextColumn::make('quantity')
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('qr_parse_status')
                     ->badge()
                     ->placeholder('Not parsed'),

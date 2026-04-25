@@ -34,12 +34,13 @@ class CaptureBook extends Page
 
     public ?int $frontImageWidth = null;
 
-
     public ?int $frontImageHeight = null;
 
     public ?int $backImageWidth = null;
 
     public ?int $backImageHeight = null;
+
+    public int $quantity = 1;
 
     /**
      * @return array<string, mixed>
@@ -53,6 +54,7 @@ class CaptureBook extends Page
             'frontImageHeight' => ['nullable', 'integer', 'min:1'],
             'backImageWidth' => ['nullable', 'integer', 'min:1'],
             'backImageHeight' => ['nullable', 'integer', 'min:1'],
+            'quantity' => ['required', 'integer', 'min:1'],
         ];
     }
 
@@ -64,6 +66,7 @@ class CaptureBook extends Page
             $captureSession = CaptureSession::create([
                 'submitted_by' => auth()->id(),
                 'status' => CaptureSessionStatus::Captured,
+                'quantity' => $this->quantity,
                 'submitted_at' => now(),
             ]);
 
@@ -96,6 +99,7 @@ class CaptureBook extends Page
                 'payload' => [
                     'front_image_path' => $frontImage['path'],
                     'back_image_path' => $backImage['path'],
+                    'quantity' => $this->quantity,
                     'notes' => 'Raw browser camera capture submitted for review.',
                 ],
                 'source_meta' => [

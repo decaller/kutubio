@@ -48,6 +48,7 @@ class CaptureBookPageTest extends TestCase
             ->set('frontImageHeight', 1)
             ->set('backImageWidth', 1)
             ->set('backImageHeight', 1)
+            ->set('quantity', 3)
             ->call('submit')
             ->assertRedirect();
 
@@ -55,6 +56,7 @@ class CaptureBookPageTest extends TestCase
 
         $this->assertSame($user->id, $captureSession->submitted_by);
         $this->assertSame(CaptureSessionStatus::Captured, $captureSession->status);
+        $this->assertSame(3, $captureSession->quantity);
         $this->assertNotNull($captureSession->submitted_at);
         $this->assertSame(['mime_type' => 'image/png', 'size_bytes' => 68, 'width' => 1, 'height' => 1], $captureSession->front_image_meta);
         $this->assertSame(['mime_type' => 'image/png', 'size_bytes' => 68, 'width' => 1, 'height' => 1], $captureSession->back_image_meta);
@@ -69,6 +71,7 @@ class CaptureBookPageTest extends TestCase
         $this->assertSame('capture_page', $revision->source_stage);
         $this->assertSame($captureSession->front_image_path, $revision->payload['front_image_path']);
         $this->assertSame($captureSession->back_image_path, $revision->payload['back_image_path']);
+        $this->assertSame(3, $revision->payload['quantity']);
     }
 
     private function imageDataUrl(): string

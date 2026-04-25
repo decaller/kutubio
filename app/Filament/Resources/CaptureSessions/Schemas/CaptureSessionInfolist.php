@@ -39,6 +39,8 @@ class CaptureSessionInfolist
                             ->placeholder('System'),
                         TextEntry::make('status')
                             ->badge(),
+                        TextEntry::make('quantity')
+                            ->numeric(),
                         TextEntry::make('qr_parse_status')
                             ->badge()
                             ->placeholder('Not parsed'),
