@@ -17,7 +17,7 @@
                     <div id="cameraHelp" class="absolute inset-x-4 top-16 hidden rounded-lg bg-danger-600/95 p-3 text-sm font-medium text-white shadow-lg"></div>
                     <div class="absolute bottom-4 left-4 right-4">
                         <div class="mb-2 flex items-center justify-between text-xs font-medium text-white">
-                            <span id="captureSideLabel">Front cover</span>
+                            <span id="captureSideLabel">Front</span>
                             <span id="stabilityPercent">0%</span>
                         </div>
                         <div class="h-2 overflow-hidden rounded-full bg-white/25">
@@ -26,15 +26,9 @@
                     </div>
                 </div>
 
-                <div class="grid gap-3 border-t border-gray-200 p-4 dark:border-white/10 sm:grid-cols-3">
-                    <button id="startCameraButton" type="button" class="rounded-lg bg-primary-600 px-4 py-3 text-sm font-semibold text-white hover:bg-primary-500">
-                        Start Camera
-                    </button>
-                    <button id="manualCaptureButton" type="button" class="rounded-lg bg-gray-900 px-4 py-3 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-50 dark:bg-white dark:text-gray-950" disabled>
+                <div class="border-t border-gray-200 p-4 dark:border-white/10">
+                    <button id="manualCaptureButton" type="button" class="w-full rounded-lg bg-gray-900 px-4 py-3 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-50 dark:bg-white dark:text-gray-950" disabled>
                         Capture Now
-                    </button>
-                    <button id="stopCameraButton" type="button" class="rounded-lg border border-gray-300 px-4 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 disabled:opacity-50 dark:border-white/20 dark:text-white dark:hover:bg-white/10" disabled>
-                        Stop Camera
                     </button>
                 </div>
             </section>
@@ -44,32 +38,34 @@
                     Submit Book
                 </button>
 
-                <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-gray-900">
-                    <div class="mb-3 flex items-center justify-between gap-3">
-                        <h2 class="text-base font-semibold text-gray-950 dark:text-white">Front cover</h2>
-                        <button id="retakeFrontButton" type="button" class="text-sm font-semibold text-primary-600 disabled:text-gray-400" disabled>
-                            Retake
-                        </button>
-                    </div>
-                    <div class="aspect-[4/3] overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
-                        <img id="frontPreview" class="hidden h-full w-full object-cover" alt="Front cover preview">
-                        <div id="frontPlaceholder" class="flex h-full items-center justify-center px-4 text-center text-sm text-gray-500">
-                            Waiting for front cover
+                <div class="flex flex-row gap-3 lg:flex-col lg:gap-4">
+                    <div class="w-1/2 rounded-xl border border-gray-200 bg-white p-3 shadow-sm dark:border-white/10 dark:bg-gray-900 lg:w-full sm:p-4">
+                        <div class="mb-2 flex items-center justify-between gap-2 sm:mb-3 sm:gap-4">
+                            <h2 class="truncate text-[10px] font-semibold text-gray-950 dark:text-white sm:text-base">Front</h2>
+                            <button id="retakeFrontButton" type="button" class="shrink-0 text-[10px] font-semibold text-primary-600 disabled:text-gray-400 sm:text-sm">
+                                Retake
+                            </button>
+                        </div>
+                        <div class="aspect-[4/3] overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
+                            <img id="frontPreview" class="hidden h-full w-full object-cover" alt="Front preview">
+                            <div id="frontPlaceholder" class="flex h-full items-center justify-center px-1 text-center text-[9px] text-gray-500 sm:px-4 sm:text-sm">
+                                Waiting...
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-gray-900">
-                    <div class="mb-3 flex items-center justify-between gap-3">
-                        <h2 class="text-base font-semibold text-gray-950 dark:text-white">Back / QR side</h2>
-                        <button id="retakeBackButton" type="button" class="text-sm font-semibold text-primary-600 disabled:text-gray-400" disabled>
-                            Retake
-                        </button>
-                    </div>
-                    <div class="aspect-[4/3] overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
-                        <img id="backPreview" class="hidden h-full w-full object-cover" alt="Back cover preview">
-                        <div id="backPlaceholder" class="flex h-full items-center justify-center px-4 text-center text-sm text-gray-500">
-                            Waiting for back / QR side
+                    <div class="w-1/2 rounded-xl border border-gray-200 bg-white p-3 shadow-sm dark:border-white/10 dark:bg-gray-900 lg:w-full sm:p-4">
+                        <div class="mb-2 flex items-center justify-between gap-2 sm:mb-3 sm:gap-4">
+                            <h2 class="truncate text-[10px] font-semibold text-gray-950 dark:text-white sm:text-base">ISBN</h2>
+                            <button id="retakeBackButton" type="button" class="shrink-0 text-[10px] font-semibold text-primary-600 disabled:text-gray-400 sm:text-sm">
+                                Retake
+                            </button>
+                        </div>
+                        <div class="aspect-[4/3] overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
+                            <img id="backPreview" class="hidden h-full w-full object-cover" alt="ISBN preview">
+                            <div id="backPlaceholder" class="flex h-full items-center justify-center px-1 text-center text-[9px] text-gray-500 sm:px-4 sm:text-sm">
+                                Waiting...
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -108,9 +104,7 @@
             const stabilityPercent = document.getElementById('stabilityPercent');
             const stabilityBar = document.getElementById('stabilityBar');
 
-            const startCameraButton = document.getElementById('startCameraButton');
             const manualCaptureButton = document.getElementById('manualCaptureButton');
-            const stopCameraButton = document.getElementById('stopCameraButton');
             const submitCaptureButton = document.getElementById('submitCaptureButton');
             const retakeFrontButton = document.getElementById('retakeFrontButton');
             const retakeBackButton = document.getElementById('retakeBackButton');
@@ -122,7 +116,7 @@
                     height: document.getElementById('frontImageHeight'),
                     preview: document.getElementById('frontPreview'),
                     placeholder: document.getElementById('frontPlaceholder'),
-                    label: 'Front cover',
+                    label: 'Front',
                 },
                 back: {
                     data: document.getElementById('backImageData'),
@@ -130,7 +124,7 @@
                     height: document.getElementById('backImageHeight'),
                     preview: document.getElementById('backPreview'),
                     placeholder: document.getElementById('backPlaceholder'),
-                    label: 'Back / QR side',
+                    label: 'ISBN',
                 },
             };
 
@@ -202,13 +196,6 @@
                 }, 100);
             };
 
-            const stopLoop = () => {
-                if (loopId) {
-                    window.clearInterval(loopId);
-                    loopId = null;
-                }
-            };
-
             const startCamera = async () => {
                 setCameraHelp();
 
@@ -236,8 +223,6 @@
 
                     video.srcObject = stream;
                     manualCaptureButton.disabled = false;
-                    stopCameraButton.disabled = false;
-                    startCameraButton.disabled = true;
                     setStatus(`Ready for ${fields[activeSide].label}`);
                     startLoop();
                 } catch (error) {
@@ -245,21 +230,6 @@
                     setStatus('Camera unavailable', 'bg-danger-600');
                     setCameraHelp(error?.message || 'The browser denied or could not start the camera.');
                 }
-            };
-
-            const stopCamera = () => {
-                stopLoop();
-
-                if (stream) {
-                    stream.getTracks().forEach((track) => track.stop());
-                    stream = null;
-                }
-
-                video.srcObject = null;
-                startCameraButton.disabled = false;
-                manualCaptureButton.disabled = true;
-                stopCameraButton.disabled = true;
-                setStatus('Camera stopped');
             };
 
             const analyzeFrame = () => {
@@ -360,10 +330,7 @@
                 const sideCaptured = activeSide;
                 window.setTimeout(() => {
                     if (sideCaptured === 'back' || !stream) {
-                        state = 'IDLE';
-                        if (sideCaptured === 'back' && stream) {
-                            stopCamera();
-                        }
+                        // Don't return to IDLE if we're done or stream lost
                         return;
                     }
 
@@ -386,15 +353,13 @@
                 refreshActions();
             };
 
-            startCameraButton.addEventListener('click', startCamera);
-            stopCameraButton.addEventListener('click', stopCamera);
             manualCaptureButton.addEventListener('click', captureSnapshot);
             retakeFrontButton.addEventListener('click', () => retake('front'));
             retakeBackButton.addEventListener('click', () => retake('back'));
-            window.addEventListener('beforeunload', stopCamera);
 
             setActiveSide('front');
             refreshActions();
+            startCamera();
         })();
     </script>
 </x-filament-panels::page>
