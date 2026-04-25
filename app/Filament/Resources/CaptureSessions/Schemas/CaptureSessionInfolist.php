@@ -3,7 +3,9 @@
 namespace App\Filament\Resources\CaptureSessions\Schemas;
 
 use App\Enums\CaptureSessionStatus;
+use App\Filament\Resources\Books\BookResource;
 use App\Jobs\ExtractBookDataWithVisionJob;
+use App\Jobs\PersistCaptureSessionJob;
 use App\Jobs\ReadIsbnQrCodeJob;
 use App\Jobs\SummarizeCaptureSessionJob;
 use Filament\Actions\Action;
@@ -39,11 +41,40 @@ class CaptureSessionInfolist
                     ])
                     ->columns(2),
 
+                Section::make('Resulting Metadata')
+                    ->schema([
+                        TextEntry::make('extracted_title')
+                            ->label('Title')
+                            ->getStateUsing(fn ($record) => $record->metadataRevisions()->latest()->first()?->payload['title'] ?? 'N/A')
+                            ->weight('bold')
+                            ->columnSpanFull(),
+                        TextEntry::make('extracted_authors')
+                            ->label('Authors')
+                            ->getStateUsing(fn ($record) => implode(', ', (array) ($record->metadataRevisions()->latest()->first()?->payload['authors'] ?? [])))
+                            ->placeholder('None'),
+                        TextEntry::make('extracted_isbn')
+                            ->label('ISBN/QR')
+                            ->getStateUsing(fn ($record) => $record->metadataRevisions()->where('source_stage', 'qr_reading')->latest()->first()?->payload['decoded_text'] ?? 'Not found'),
+                        TextEntry::make('created_book')
+                            ->label('Book Created')
+                            ->getStateUsing(fn ($record) => $record->metadataRevisions()->whereNotNull('book_id')->first()?->book?->title ?? 'None')
+                            ->color('success')
+                            ->url(fn ($record) => $record->metadataRevisions()->whereNotNull('book_id')->first() ? BookResource::getUrl('view', ['record' => $record->metadataRevisions()->whereNotNull('book_id')->first()->book_id]) : null),
+                        TextEntry::make('extracted_summary')
+                            ->label('AI Summary')
+                            ->getStateUsing(fn ($record) => $record->metadataRevisions()->where('source_stage', 'final_summary')->latest()->first()?->payload['summary'] ?? 'No summary yet')
+                            ->columnSpanFull()
+                            ->prose(),
+                    ])
+                    ->columns(2)
+                    ->collapsible()
+                    ->collapsed(fn ($record) => $record->metadataRevisions()->count() === 0),
+
                 Section::make('Processing actions')
                     ->schema([
                         Actions::make([
                             Action::make('extractTitle')
-                                ->label(fn ($record) => 'Extract Title' . ($record->metadataRevisions()->where('source_stage', 'vision_extraction')->exists() ? ' ✅' : ''))
+                                ->label(fn ($record) => 'Extract Title'.($record->metadataRevisions()->where('source_stage', 'vision_extraction')->exists() ? ' ✅' : ''))
                                 ->icon('heroicon-m-sparkles')
                                 ->color(fn ($record) => $record->metadataRevisions()->where('source_stage', 'vision_extraction')->exists() ? 'success' : 'info')
                                 ->action(function ($record) {
@@ -53,7 +84,7 @@ class CaptureSessionInfolist
                                 ->disabled(fn ($record) => ! $record->front_image_path || $record->status === CaptureSessionStatus::Processing),
 
                             Action::make('readIsbnQr')
-                                ->label(fn ($record) => 'Read ISBN QR' . ($record->metadataRevisions()->where('source_stage', 'qr_reading')->exists() ? ' ✅' : ''))
+                                ->label(fn ($record) => 'Read ISBN QR'.($record->metadataRevisions()->where('source_stage', 'qr_reading')->exists() ? ' ✅' : ''))
                                 ->icon('heroicon-m-qr-code')
                                 ->color(fn ($record) => $record->metadataRevisions()->where('source_stage', 'qr_reading')->exists() ? 'success' : 'info')
                                 ->action(function ($record) {
@@ -63,7 +94,7 @@ class CaptureSessionInfolist
                                 ->disabled(fn ($record) => ! $record->back_image_path || $record->status === CaptureSessionStatus::Processing),
 
                             Action::make('summarize')
-                                ->label(fn ($record) => 'Final Summary' . ($record->metadataRevisions()->where('source_stage', 'final_summary')->exists() ? ' ✅' : ''))
+                                ->label(fn ($record) => 'Final Summary'.($record->metadataRevisions()->where('source_stage', 'final_summary')->exists() ? ' ✅' : ''))
                                 ->icon('heroicon-m-document-text')
                                 ->color(fn ($record) => $record->metadataRevisions()->where('source_stage', 'final_summary')->exists() ? 'success' : 'info')
                                 ->action(function ($record) {
@@ -72,30 +103,53 @@ class CaptureSessionInfolist
                                 })
                                 ->disabled(fn ($record) => $record->status === CaptureSessionStatus::Processing),
 
+                            Action::make('persist')
+                                ->label(fn ($record) => 'Persist Records'.($record->status === CaptureSessionStatus::Approved ? ' ✅' : ''))
+                                ->icon('heroicon-m-archive-box-arrow-down')
+                                ->color(fn ($record) => $record->status === CaptureSessionStatus::Approved ? 'success' : 'warning')
+                                ->action(function ($record) {
+                                    PersistCaptureSessionJob::dispatch($record);
+                                    Notification::make()->title('Persistence dispatched')->success()->send();
+                                })
+                                ->requiresConfirmation()
+                                ->disabled(fn ($record) => $record->status === CaptureSessionStatus::Processing || ! $record->metadataRevisions()->where('source_stage', 'vision_extraction')->exists()),
+
                             Action::make('processAll')
-                                ->label('Process All (Chain)')
-                                ->icon('heroicon-m-play-circle')
+                                ->label('Process All (Full Chain)')
+                                ->icon('heroicon-m-rocket-launch')
                                 ->color('primary')
                                 ->action(function ($record) {
                                     $record->update(['status' => CaptureSessionStatus::Processing]);
-                                    
+
                                     Bus::chain([
                                         new ExtractBookDataWithVisionJob($record),
                                         new ReadIsbnQrCodeJob($record),
                                         new SummarizeCaptureSessionJob($record),
+                                        new PersistCaptureSessionJob($record),
                                     ])->dispatch();
 
-                                    Notification::make()->title('Full pipeline dispatched')->success()->send();
+                                    Notification::make()->title('Full automation pipeline dispatched')->success()->send();
                                 })
                                 ->requiresConfirmation()
                                 ->disabled(fn ($record) => ! $record->front_image_path || ! $record->back_image_path || $record->status === CaptureSessionStatus::Processing),
                         ])
-                        ->columnSpanFull(),
-                        
+                            ->columnSpanFull(),
+
                         Grid::make(3)
                             ->schema([
                                 TextEntry::make('status')
                                     ->badge(),
+                                TextEntry::make('current_processing_stage')
+                                    ->label('Current Stage')
+                                    ->placeholder('Idle')
+                                    ->visible(fn ($record) => $record->status === CaptureSessionStatus::Processing),
+                                TextEntry::make('duration')
+                                    ->label('Processing Time')
+                                    ->getStateUsing(fn ($record) => $record->processing_started_at ?
+                                        ($record->processing_finished_at ?
+                                            $record->processing_started_at->diffForHumans($record->processing_finished_at, true) :
+                                            $record->processing_started_at->diffForHumans(now(), true).' (running)') :
+                                        'N/A'),
                                 TextEntry::make('qr_parse_status')
                                     ->badge()
                                     ->placeholder('Not parsed'),
@@ -103,9 +157,12 @@ class CaptureSessionInfolist
                                     ->label('Revisions')
                                     ->numeric(),
                                 TextEntry::make('failure_reason')
+                                    ->label('Failure Reason')
                                     ->placeholder('None')
                                     ->columnSpanFull()
-                                    ->color('danger'),
+                                    ->color('danger')
+                                    ->weight('bold')
+                                    ->prose(),
                             ]),
                     ])
                     ->columns(1),

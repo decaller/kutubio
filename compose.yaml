@@ -24,6 +24,19 @@ services:
         depends_on:
             - pgsql
             - redis
+    worker:
+        image: sail-8.5/app
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - sail
+        depends_on:
+            - pgsql
+            - redis
+        command: php artisan queue:work --timeout=300 --tries=3
     pgsql:
         image: 'postgres:18-alpine'
         ports:

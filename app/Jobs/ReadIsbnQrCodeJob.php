@@ -33,8 +33,20 @@ class ReadIsbnQrCodeJob implements ShouldQueue
      */
     public function handle(OllamaService $ollama): void
     {
+        Log::info("Starting ReadIsbnQrCodeJob for session {$this->captureSession->public_id}");
+
+        if ($this->captureSession->status !== CaptureSessionStatus::Processing) {
+            $this->captureSession->update([
+                'status' => CaptureSessionStatus::Processing,
+                'processing_started_at' => now(),
+            ]);
+        }
+
+        $this->captureSession->update(['current_processing_stage' => 'Reading ISBN QR...']);
+
         if (! $this->captureSession->back_image_path) {
             Log::warning("Capture session {$this->captureSession->public_id} has no back image for QR reading.");
+
             return;
         }
 
@@ -75,13 +87,13 @@ class ReadIsbnQrCodeJob implements ShouldQueue
             }
 
         } catch (\Exception $e) {
-            Log::error("QR reading failed for session {$this->captureSession->public_id}: " . $e->getMessage());
-            
+            Log::error("QR reading failed for session {$this->captureSession->public_id}: ".$e->getMessage());
+
             $this->captureSession->update([
                 'qr_parse_status' => QrParseStatus::Unreadable,
-                'failure_reason' => "QR reading failed: " . $e->getMessage(),
+                'failure_reason' => 'QR reading failed: '.$e->getMessage(),
             ]);
-            
+
             throw $e;
         }
     }

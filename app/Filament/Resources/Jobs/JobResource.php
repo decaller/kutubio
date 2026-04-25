@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\FailedJobs;
+namespace App\Filament\Resources\Jobs;
 
-use App\Filament\Resources\FailedJobs\Pages;
-use App\Models\FailedJob;
+use App\Models\QueueJob;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -14,15 +13,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class FailedJobResource extends Resource
+class JobResource extends Resource
 {
-    protected static ?string $model = FailedJob::class;
+    protected static ?string $model = QueueJob::class;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-exclamation-triangle';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-queue-list';
 
     protected static string|UnitEnum|null $navigationGroup = 'System';
 
-    protected static ?int $navigationSort = 110;
+    protected static ?int $navigationSort = 100;
 
     public static function table(Table $table): Table
     {
@@ -34,13 +33,17 @@ class FailedJobResource extends Resource
                     ->badge()
                     ->sortable(),
                 TextColumn::make('display_name')
-                    ->label('Job')
+                    ->label('Job Name')
                     ->searchable(),
-                TextColumn::make('failed_at')
+                TextColumn::make('attempts')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->label('Queued At')
                     ->dateTime()
-                    ->sortable()
-                    ->color('danger'),
+                    ->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
@@ -58,7 +61,13 @@ class FailedJobResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageFailedJobs::route('/'),
+            'index' => Pages\ManageJobs::route('/'),
+            'failed' => Pages\ListFailedJobs::route('/failed'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getModel()::count();
     }
 }

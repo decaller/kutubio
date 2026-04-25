@@ -33,8 +33,19 @@ class SummarizeCaptureSessionJob implements ShouldQueue
      */
     public function handle(OllamaService $ollama): void
     {
+        Log::info("Starting SummarizeCaptureSessionJob for session {$this->captureSession->public_id}");
+
+        if ($this->captureSession->status !== CaptureSessionStatus::Processing) {
+            $this->captureSession->update([
+                'status' => CaptureSessionStatus::Processing,
+                'processing_started_at' => now(),
+            ]);
+        }
+
+        $this->captureSession->update(['current_processing_stage' => 'Generating Summary...']);
+
         $revisions = $this->captureSession->metadataRevisions;
-        
+
         $collectedData = [];
         foreach ($revisions as $revision) {
             $collectedData[] = [
@@ -45,10 +56,10 @@ class SummarizeCaptureSessionJob implements ShouldQueue
 
         try {
             // We use the regular LLM model for summarization, not vision
-            $prompt = "Analyze the following collected metadata from a book capture session and provide a final summary. 
+            $prompt = 'Analyze the following collected metadata from a book capture session and provide a final summary. 
             Identify if any critical information is missing (Title, Author, ISBN/CopyID). 
             
-            Collected Data: " . json_encode($collectedData) . "
+            Collected Data: '.json_encode($collectedData)."
             
             Respond ONLY with a JSON object containing: 
             'summary' (string), 
@@ -58,8 +69,8 @@ class SummarizeCaptureSessionJob implements ShouldQueue
             // Note: For pure text tasks, we could use OLLAMA_LLM_MODEL
             // but for simplicity we'll use the OllamaService with no image.
             // I'll update OllamaService to support text-only.
-            
-            $response = Http::timeout(60)->post(config('services.ollama.url') . "/api/generate", [
+
+            $response = Http::timeout(60)->post(config('services.ollama.url').'/api/generate', [
                 'model' => config('services.ollama.llm_model', 'llama3.1:latest'),
                 'prompt' => $prompt,
                 'stream' => false,
@@ -67,7 +78,7 @@ class SummarizeCaptureSessionJob implements ShouldQueue
             ]);
 
             if ($response->failed()) {
-                throw new \Exception("Ollama API request failed: " . $response->body());
+                throw new \Exception('Ollama API request failed: '.$response->body());
             }
 
             $result = $response->json();
@@ -87,17 +98,18 @@ class SummarizeCaptureSessionJob implements ShouldQueue
 
             $this->captureSession->update([
                 'status' => CaptureSessionStatus::NeedsReview,
+                'current_processing_stage' => null,
                 'processing_finished_at' => now(),
             ]);
 
         } catch (\Exception $e) {
-            Log::error("Summary generation failed for session {$this->captureSession->public_id}: " . $e->getMessage());
-            
+            Log::error("Summary generation failed for session {$this->captureSession->public_id}: ".$e->getMessage());
+
             $this->captureSession->update([
                 'status' => CaptureSessionStatus::Failed,
-                'failure_reason' => "Summary failed: " . $e->getMessage(),
+                'failure_reason' => 'Summary failed: '.$e->getMessage(),
             ]);
-            
+
             throw $e;
         }
     }

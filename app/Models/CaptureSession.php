@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
-#[Fillable(['submitted_by', 'status', 'quantity', 'front_image_path', 'back_image_path', 'front_image_meta', 'back_image_meta', 'decoded_qr_payload', 'qr_parse_status', 'failure_reason', 'submitted_at', 'processing_started_at', 'processing_finished_at'])]
+#[Fillable(['submitted_by', 'status', 'current_processing_stage', 'quantity', 'front_image_path', 'back_image_path', 'front_image_meta', 'back_image_meta', 'decoded_qr_payload', 'qr_parse_status', 'failure_reason', 'submitted_at', 'processing_started_at', 'processing_finished_at'])]
 class CaptureSession extends Model
 {
     /** @use HasFactory<CaptureSessionFactory> */
