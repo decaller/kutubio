@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\CaptureSessions\Schemas;
 
+use Filament\Infolists\Components\Actions;
+use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
@@ -29,6 +31,25 @@ class CaptureSessionInfolist
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
+                Section::make('AI Actions')
+                    ->schema([
+                        Actions::make([
+                            Action::make('extractTitle')
+                                ->label('Extract Title (AI)')
+                                ->icon('heroicon-m-sparkles')
+                                ->color('info')
+                                ->action(function ($record) {
+                                    \App\Jobs\ExtractBookDataWithVisionJob::dispatch($record);
+                                    
+                                    \Filament\Notifications\Notification::make()
+                                        ->title('Vision extraction dispatched')
+                                        ->success()
+                                        ->send();
+                                })
+                                ->disabled(fn ($record) => ! $record->front_image_path),
+                        ]),
+                    ])
+                    ->visible(fn ($record) => $record !== null),
                 Section::make('Session')
                     ->schema([
                         TextEntry::make('public_id')
