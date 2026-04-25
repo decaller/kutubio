@@ -40,6 +40,10 @@
             </section>
 
             <aside class="space-y-4">
+                <button id="submitCaptureButton" type="submit" class="w-full rounded-lg bg-success-600 px-4 py-3 text-sm font-semibold text-white hover:bg-success-500 disabled:opacity-50" disabled wire:loading.attr="disabled">
+                    Submit Book
+                </button>
+
                 <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-gray-900">
                     <div class="mb-3 flex items-center justify-between gap-3">
                         <h2 class="text-base font-semibold text-gray-950 dark:text-white">Front cover</h2>
@@ -69,10 +73,6 @@
                         </div>
                     </div>
                 </div>
-
-                <button id="submitCaptureButton" type="submit" class="w-full rounded-lg bg-success-600 px-4 py-3 text-sm font-semibold text-white hover:bg-success-500 disabled:opacity-50" disabled wire:loading.attr="disabled">
-                    Submit Book
-                </button>
             </aside>
         </div>
 
@@ -360,6 +360,9 @@
                 window.setTimeout(() => {
                     if (activeSide === 'back' || !stream) {
                         state = 'IDLE';
+                        if (activeSide === 'back' && stream) {
+                            stopCamera();
+                        }
                         return;
                     }
 
