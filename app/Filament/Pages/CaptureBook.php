@@ -42,6 +42,13 @@ class CaptureBook extends Page
 
     public int $quantity = 1;
 
+    public function updatedQuantity($value): void
+    {
+        if (! is_numeric($value) || $value < 1) {
+            $this->quantity = 1;
+        }
+    }
+
     /**
      * @return array<string, mixed>
      */

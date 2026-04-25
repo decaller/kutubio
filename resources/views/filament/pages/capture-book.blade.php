@@ -38,38 +38,45 @@
                     <label for="quantity" class="mb-2 block text-sm font-medium text-gray-950 dark:text-white">
                         Quantity
                     </label>
-                    <div class="flex items-center gap-2">
+                    
+                    <div style="display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 8px;">
                         <button 
-                            type="button" 
-                            x-on:click="$wire.quantity = Math.max(1, $wire.quantity - 1)"
-                            class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-950 hover:bg-gray-50 dark:border-white/10 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+                            type="button"
+                            x-on:click="$wire.quantity = Math.max(1, (parseInt($wire.quantity) || 1) - 1)"
+                            style="flex: 1; height: 64px; background-color: #ffffff !important; color: #000000 !important; border: none; border-radius: 16px; font-size: 40px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgb(255 255 255 / 0.1);"
                         >
-                            <x-heroicon-o-minus class="h-5 w-5" />
+                            −
                         </button>
 
-                        <input 
-                            id="quantity"
-                            type="number" 
-                            wire:model.live="quantity" 
-                            min="1"
-                            class="h-10 w-full rounded-lg border-gray-200 bg-white text-center text-sm font-semibold text-gray-950 focus:border-primary-500 focus:ring-primary-500 dark:border-white/10 dark:bg-gray-800 dark:text-white"
-                        >
+                        <div style="width: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <span style="font-size: 40px; font-weight: 900; color: #ffffff !important;" x-text="$wire.quantity"></span>
+                            <span style="font-size: 12px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Qty</span>
+                        </div>
 
                         <button 
-                            type="button" 
-                            x-on:click="$wire.quantity = parseInt($wire.quantity) + 1"
-                            class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-950 hover:bg-gray-50 dark:border-white/10 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+                            type="button"
+                            x-on:click="$wire.quantity = (parseInt($wire.quantity) || 1) + 1"
+                            style="flex: 1; height: 64px; background-color: #ffffff !important; color: #000000 !important; border: none; border-radius: 16px; font-size: 40px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgb(255 255 255 / 0.1);"
                         >
-                            <x-heroicon-o-plus class="h-5 w-5" />
+                            +
                         </button>
                     </div>
+
                     @error('quantity')
                         <p class="mt-1 text-xs text-danger-600">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <button id="submitCaptureButton" type="submit" class="w-full rounded-lg bg-success-600 px-4 py-3 text-sm font-semibold text-white hover:bg-success-500 disabled:opacity-50" disabled wire:loading.attr="disabled">
-                    Submit Book
+                    <span wire:loading.remove wire:target="submit, frontImageData, backImageData">
+                        Submit Book
+                    </span>
+                    <span wire:loading wire:target="frontImageData, backImageData">
+                        Uploading...
+                    </span>
+                    <span wire:loading wire:target="submit">
+                        Processing...
+                    </span>
                 </button>
 
                 <div class="flex flex-row gap-3 lg:flex-col lg:gap-4">
