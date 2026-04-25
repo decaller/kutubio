@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'ollama' => [
+        'url' => env('OLLAMA_URL', 'http://localhost:11434'),
+        'vision_model' => env('OLLAMA_VISION_MODEL', 'llava:7b'),
+        'llm_model' => env('OLLAMA_LLM_MODEL', 'llama3.1:latest'),
+    ],
+
 ];
