@@ -357,16 +357,19 @@
                 updateStability();
                 refreshActions();
 
+                const sideCaptured = activeSide;
                 window.setTimeout(() => {
-                    if (activeSide === 'back' || !stream) {
+                    if (sideCaptured === 'back' || !stream) {
                         state = 'IDLE';
-                        if (activeSide === 'back' && stream) {
+                        if (sideCaptured === 'back' && stream) {
                             stopCamera();
                         }
                         return;
                     }
 
-                    setActiveSide('back');
+                    if (activeSide === sideCaptured) {
+                        setActiveSide('back');
+                    }
                 }, 350);
             };
 
