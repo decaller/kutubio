@@ -18,20 +18,6 @@ class ViewCaptureSession extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('extractTitle')
-                ->label('Extract Title (AI)')
-                ->icon('heroicon-o-sparkles')
-                ->color('info')
-                ->action(function () {
-                    ExtractBookDataWithVisionJob::dispatch($this->record);
-
-                    Notification::make()
-                        ->title('Vision extraction dispatched')
-                        ->body('The job has been added to the queue.')
-                        ->success()
-                        ->send();
-                })
-                ->disabled(fn () => ! $this->record->front_image_path),
             EditAction::make(),
         ];
     }
