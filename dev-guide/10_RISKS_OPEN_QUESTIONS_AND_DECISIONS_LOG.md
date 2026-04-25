@@ -34,6 +34,7 @@ This step keeps unresolved items visible. Goal is prevent quiet assumption drift
    - QR only, no barcode
    - detached async sequential pipeline per book
    - append-only metadata revisions
+   - initial DDC category seed lives in [reference/tier2DDC.json](/home/abuhafi/Project/kutubio/dev-guide/reference/tier2DDC.json:1)
    - Filament review queue is mandatory human checkpoint
    - current student-data source reference lives in [reference/surrealDB-connection.md](/home/abuhafi/Project/kutubio/dev-guide/reference/surrealDB-connection.md:1)
    - detailed SurrealDBV2 schema and graph queries live under [reference/SurrealDBV2/README.md](/home/abuhafi/Project/kutubio/dev-guide/reference/SurrealDBV2/README.md:1)

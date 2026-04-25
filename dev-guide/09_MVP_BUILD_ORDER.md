@@ -11,7 +11,8 @@ This step turns architecture into execution order. Goal is smallest implementati
 1. Phase 1: schema and seed backbone.
    - create migrations
    - create models
-   - import initial category data from JSON
+   - import initial category data from [reference/tier2DDC.json](/home/abuhafi/Project/kutubio/dev-guide/reference/tier2DDC.json:1)
+   - preserve DDC `number` as a string category code
    - add factories where needed
    - add baseline tests for relations and uniqueness
 2. Phase 2: capture session persistence without AI.

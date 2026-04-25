@@ -35,8 +35,9 @@ This step turns raw and AI-enriched intake into trusted library data. Main focus
    - Match by normalized title/author similarity
    - Let reviewer merge instead of creating duplicate canonical book
 5. Keep category handling practical for MVP.
-   - Start from imported DDC JSON data
+   - Start from imported DDC tier-2 data in [reference/tier2DDC.json](/home/abuhafi/Project/kutubio/dev-guide/reference/tier2DDC.json:1)
    - Assign category in review flow
+   - Store the selected DDC `number` through `categories.code`
    - Delay advanced category-management UX until base intake is stable
 6. Keep print MVP narrow.
    - Print QR labels only after record approval

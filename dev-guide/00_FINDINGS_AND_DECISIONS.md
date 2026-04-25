@@ -53,8 +53,9 @@ This project is now defined as a phone-browser-first smart school library system
    - Current loaded tables include school and student-related operational data
    - Library module should treat this as external system-of-record input, not primary app database
 10. Start DDC as imported data, not hardcoded enum.
-   - Scrape source first
-   - Normalize into JSON
+   - Initial source is [reference/tier2DDC.json](/home/abuhafi/Project/kutubio/dev-guide/reference/tier2DDC.json:1)
+   - Use the two-digit/tens DDC tier as the first category seed
+   - Treat `number` as the category code and `name` as the display label
    - Later load into categories table
    - Cache heavily
 11. Preserve pragmatic print stack.

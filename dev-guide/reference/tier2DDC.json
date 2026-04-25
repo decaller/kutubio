@@ -1,0 +1,398 @@
+[
+  {
+    "number": "000",
+    "name": "Ilmu Komputer, Pengetahuan, Sistem"
+  },
+  {
+    "number": "010",
+    "name": "Bibliografi"
+  },
+  {
+    "number": "020",
+    "name": "Perpustakaan dan Ilmu Informasi"
+  },
+  {
+    "number": "030",
+    "name": "Karya Ensiklopedia Umum"
+  },
+  {
+    "number": "050",
+    "name": "Majalah, Jurnal, Terbitan Berseri Umum"
+  },
+  {
+    "number": "060",
+    "name": "Organisasi Umum dan Museum"
+  },
+  {
+    "number": "070",
+    "name": "Media Berita, Jurnalisme, Penerbitan"
+  },
+  {
+    "number": "080",
+    "name": "Kumpulan Koleksi Umum"
+  },
+  {
+    "number": "090",
+    "name": "Manuskrip, Buku-buku Langka"
+  },
+  {
+    "number": "100",
+    "name": "Filsafat"
+  },
+  {
+    "number": "110",
+    "name": "Metafisika"
+  },
+  {
+    "number": "120",
+    "name": "Epistemologi"
+  },
+  {
+    "number": "130",
+    "name": "Parapsikologi dan Okultisme"
+  },
+  {
+    "number": "140",
+    "name": "Aliran-aliran Filsafat"
+  },
+  {
+    "number": "150",
+    "name": "Psikologi"
+  },
+  {
+    "number": "160",
+    "name": "Logika"
+  },
+  {
+    "number": "170",
+    "name": "Etika"
+  },
+  {
+    "number": "180",
+    "name": "Filsafat Zaman Kuno, Abad Pertengahan dan Filsafat Timur"
+  },
+  {
+    "number": "190",
+    "name": "Filsafat Barat Modern"
+  },
+  {
+    "number": "200",
+    "name": "Mitologi Keagamaan, Teologi Sosial"
+  },
+  {
+    "number": "210",
+    "name": "Filsafat dan Teori Agama"
+  },
+  {
+    "number": "220",
+    "name": "Alkitab"
+  },
+  {
+    "number": "230",
+    "name": "Kristianitas"
+  },
+  {
+    "number": "240",
+    "name": "Peribadatan Kristen"
+  },
+  {
+    "number": "250",
+    "name": "Gereja Kristen dan Ordo Keagamaan"
+  },
+  {
+    "number": "260",
+    "name": "Teologi Sosial Kristen"
+  },
+  {
+    "number": "270",
+    "name": "Sejarah Kristianitas"
+  },
+  {
+    "number": "280",
+    "name": "Denominasi dan Sekte Kristen"
+  },
+  {
+    "number": "290",
+    "name": "Agama Islam dengan Nomor Dasar 297 DDC 23"
+  },
+  {
+    "number": "300",
+    "name": "Sosiologi dan Antropologi"
+  },
+  {
+    "number": "310",
+    "name": "Statistik Umum"
+  },
+  {
+    "number": "320",
+    "name": "Ilmu Politik"
+  },
+  {
+    "number": "330",
+    "name": "Ilmu Ekonomi"
+  },
+  {
+    "number": "340",
+    "name": "Ilmu Hukum"
+  },
+  {
+    "number": "350",
+    "name": "Administrasi Negara dan Ilmu Kemiliteran"
+  },
+  {
+    "number": "360",
+    "name": "Permasalahan Sosial, Layanan Sosial"
+  },
+  {
+    "number": "370",
+    "name": "Pendidikan"
+  },
+  {
+    "number": "380",
+    "name": "Perdagangan, Komunikasi, Transportasi"
+  },
+  {
+    "number": "390",
+    "name": "Adat Istiadat, Etiket, Folklor"
+  },
+  {
+    "number": "400",
+    "name": "Bahasa"
+  },
+  {
+    "number": "410",
+    "name": "Linguistik, Bahasa Indonesia Opsional"
+  },
+  {
+    "number": "420",
+    "name": "Bahasa Inggris, Anglo-Saxon"
+  },
+  {
+    "number": "430",
+    "name": "Bahasa Jerman"
+  },
+  {
+    "number": "440",
+    "name": "Bahasa Prancis dan Bahasa-bahasa Roman"
+  },
+  {
+    "number": "450",
+    "name": "Bahasa-bahasa Italia"
+  },
+  {
+    "number": "460",
+    "name": "Bahasa Spanyol, Bahasa Portugis, Bahasa Galisia"
+  },
+  {
+    "number": "470",
+    "name": "Bahasa Latin dan Bahasa Italic Latin"
+  },
+  {
+    "number": "480",
+    "name": "Bahasa Yunani dan Bahasa-bahasa Helenik"
+  },
+  {
+    "number": "490",
+    "name": "Bahasa-bahasa Lain"
+  },
+  {
+    "number": "500",
+    "name": "Sains"
+  },
+  {
+    "number": "510",
+    "name": "Matematika"
+  },
+  {
+    "number": "520",
+    "name": "Astronomi"
+  },
+  {
+    "number": "530",
+    "name": "Fisika"
+  },
+  {
+    "number": "540",
+    "name": "Kimia"
+  },
+  {
+    "number": "550",
+    "name": "Ilmu Bumi dan Geologi"
+  },
+  {
+    "number": "560",
+    "name": "Fosil dan Kehidupan Prasejarah"
+  },
+  {
+    "number": "570",
+    "name": "Biologi, Ilmu Hayat"
+  },
+  {
+    "number": "580",
+    "name": "Ilmu Tumbuhan, Botani"
+  },
+  {
+    "number": "590",
+    "name": "Ilmu Hewan, Zoologi"
+  },
+  {
+    "number": "600",
+    "name": "Teknologi, Ilmu Terapan"
+  },
+  {
+    "number": "610",
+    "name": "Ilmu Kedokteran dan Kesehatan"
+  },
+  {
+    "number": "620",
+    "name": "Teknik"
+  },
+  {
+    "number": "630",
+    "name": "Pertanian, Peternakan"
+  },
+  {
+    "number": "640",
+    "name": "Manajemen Rumah Tangga dan Manajemen Keluarga"
+  },
+  {
+    "number": "650",
+    "name": "Manajemen dan Hubungan Masyarakat"
+  },
+  {
+    "number": "660",
+    "name": "Teknologi Kimia"
+  },
+  {
+    "number": "670",
+    "name": "Manufaktur, Perpabrikan"
+  },
+  {
+    "number": "680",
+    "name": "Produksi untuk Keperluan Khusus"
+  },
+  {
+    "number": "690",
+    "name": "Konstruksi Bangunan"
+  },
+  {
+    "number": "700",
+    "name": "Kesenian"
+  },
+  {
+    "number": "710",
+    "name": "Arsitektur Perkotaan dan Pertamanan"
+  },
+  {
+    "number": "720",
+    "name": "Arsitektur"
+  },
+  {
+    "number": "730",
+    "name": "Seni Patung, Seni Keramik, dan Seni Logam"
+  },
+  {
+    "number": "740",
+    "name": "Seni Grafika dan Seni Dekorasi"
+  },
+  {
+    "number": "750",
+    "name": "Seni Lukis"
+  },
+  {
+    "number": "760",
+    "name": "Seni Mencetak dan Cetakan"
+  },
+  {
+    "number": "770",
+    "name": "Fotografi, Seni Komputer, Film, Video"
+  },
+  {
+    "number": "780",
+    "name": "Musik"
+  },
+  {
+    "number": "790",
+    "name": "Olahraga, Permainan, dan Pertunjukan"
+  },
+  {
+    "number": "800",
+    "name": "Kesusastraan dan Retorika"
+  },
+  {
+    "number": "810",
+    "name": "Kesusastraan Amerika, Kesusastraan Indonesia Opsional"
+  },
+  {
+    "number": "820",
+    "name": "Kesusastraan Inggris"
+  },
+  {
+    "number": "830",
+    "name": "Kesusastraan Jerman"
+  },
+  {
+    "number": "840",
+    "name": "Kesusastraan Prancis"
+  },
+  {
+    "number": "850",
+    "name": "Kesusastraan Italia"
+  },
+  {
+    "number": "860",
+    "name": "Kesusastraan Spanyol, Portugis, Galisia"
+  },
+  {
+    "number": "870",
+    "name": "Kesusastraan Latin"
+  },
+  {
+    "number": "880",
+    "name": "Kesusastraan Yunani Klasik"
+  },
+  {
+    "number": "890",
+    "name": "Kesusastraan Lain-lain"
+  },
+  {
+    "number": "900",
+    "name": "Sejarah Umum"
+  },
+  {
+    "number": "910",
+    "name": "Geografi dan Perjalanan Wisata"
+  },
+  {
+    "number": "920",
+    "name": "Biografi, Genealogi, Insignia"
+  },
+  {
+    "number": "930",
+    "name": "Sejarah Dunia Kuno sampai Tahun 499"
+  },
+  {
+    "number": "940",
+    "name": "Sejarah Eropa"
+  },
+  {
+    "number": "950",
+    "name": "Sejarah Asia"
+  },
+  {
+    "number": "960",
+    "name": "Sejarah Afrika"
+  },
+  {
+    "number": "970",
+    "name": "Sejarah Amerika Utara"
+  },
+  {
+    "number": "980",
+    "name": "Sejarah Amerika Selatan"
+  },
+  {
+    "number": "990",
+    "name": "Sejarah Bagian Dunia Lainnya"
+  }
+]

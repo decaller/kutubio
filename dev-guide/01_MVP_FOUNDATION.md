@@ -24,7 +24,9 @@ This step defines minimum backend and admin foundation needed before camera capt
    - `human_reviewed`
    - Store source tag, actor, timestamp, confidence, payload snapshot
 4. Keep category source flexible.
-   - Start from scraped DDC JSON
+   - Start from [reference/tier2DDC.json](/home/abuhafi/Project/kutubio/dev-guide/reference/tier2DDC.json:1)
+   - Import `number` into `categories.code`
+   - Import `name` into `categories.label`
    - Import into `categories` table
    - Cache read paths aggressively
    - Allow display metadata changes from Filament later

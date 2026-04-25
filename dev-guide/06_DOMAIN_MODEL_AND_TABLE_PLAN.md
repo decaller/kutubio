@@ -51,6 +51,9 @@ This step converts architecture into Laravel model and migration targets. Goal i
    - `lost`
    - `archived`
 6. Keep `Category` database-driven and cacheable.
+   - Seed initial rows from [reference/tier2DDC.json](/home/abuhafi/Project/kutubio/dev-guide/reference/tier2DDC.json:1)
+   - Map JSON `number` to `code`
+   - Map JSON `name` to `label`
    - Suggested columns:
      - `id`
      - `code`
@@ -153,4 +156,5 @@ This step converts architecture into Laravel model and migration targets. Goal i
 - Review every table and ask: is this real domain object or only temporary convenience.
 - Confirm no table duplicates same truth in two mutable places without explicit reason.
 - Confirm schema still works if one capture session fails before a `Book` exists.
+- Confirm the DDC seed import preserves `number` values as strings so leading zeroes survive.
 - Confirm print profile design matches actual sticker paper constraints before coding UI.
